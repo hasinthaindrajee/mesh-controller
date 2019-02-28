@@ -32,7 +32,9 @@ type MeshV1alpha1Interface interface {
 	CellsGetter
 	GatewaysGetter
 	ServicesGetter
+	StandardCellsGetter
 	TokenServicesGetter
+	WebCellsGetter
 }
 
 // MeshV1alpha1Client is used to interact with features provided by the mesh group.
@@ -52,8 +54,16 @@ func (c *MeshV1alpha1Client) Services(namespace string) ServiceInterface {
 	return newServices(c, namespace)
 }
 
+func (c *MeshV1alpha1Client) StandardCells(namespace string) StandardCellInterface {
+	return newStandardCells(c, namespace)
+}
+
 func (c *MeshV1alpha1Client) TokenServices(namespace string) TokenServiceInterface {
 	return newTokenServices(c, namespace)
+}
+
+func (c *MeshV1alpha1Client) WebCells(namespace string) WebCellInterface {
+	return newWebCells(c, namespace)
 }
 
 // NewForConfig creates a new MeshV1alpha1Client for the given config.

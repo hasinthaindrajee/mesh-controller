@@ -25,6 +25,22 @@ import (
 	"github.com/cellery-io/mesh-controller/pkg/apis/mesh/v1alpha1"
 )
 
+func CreateStandardCellOwnerRef(obj metav1.Object) *metav1.OwnerReference {
+	return metav1.NewControllerRef(obj, schema.GroupVersionKind{
+		Group:   v1alpha1.SchemeGroupVersion.Group,
+		Version: v1alpha1.SchemeGroupVersion.Version,
+		Kind:    "StandardCell",
+	})
+}
+
+func CreateWebCellOwnerRef(obj metav1.Object) *metav1.OwnerReference {
+	return metav1.NewControllerRef(obj, schema.GroupVersionKind{
+		Group:   v1alpha1.SchemeGroupVersion.Group,
+		Version: v1alpha1.SchemeGroupVersion.Version,
+		Kind:    "WebCell",
+	})
+}
+
 func CreateCellOwnerRef(obj metav1.Object) *metav1.OwnerReference {
 	return metav1.NewControllerRef(obj, schema.GroupVersionKind{
 		Group:   v1alpha1.SchemeGroupVersion.Group,

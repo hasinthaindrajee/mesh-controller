@@ -1,0 +1,50 @@
+apiVersion: mesh.cellery.io/v1alpha1
+kind: WebCell
+metadata:
+  name: my-web-cell
+spec:
+  hostName: my-domain.com
+  gatewayTemplate:
+    spec:
+      http:
+      - context: time
+        definitions:
+        - path: /
+          method: GET
+        backend: server-time
+        global: false
+  servicesTemplates:
+  - metadata:
+      name: time-us
+    spec:
+      replicas: 1
+      container:
+        image: docker.io/mirage20/time-us
+        ports:
+        - containerPort: 8080
+      servicePort: 80
+  - metadata:
+      name: time-uk
+    spec:
+      replicas: 1
+      container:
+        image: docker.io/mirage20/time-uk
+        ports:
+        - containerPort: 8080
+      servicePort: 80
+  - metadata:
+      name: server-time
+    spec:
+      replicas: 1
+      container:
+        image: docker.io/mirage20/time
+        ports:
+        - containerPort: 8080
+      servicePort: 80
+  - metadata:
+      name: debug
+    spec:
+      replicas: 1
+      container:
+        image: docker.io/mirage20/k8s-debug-tools
+      servicePort: 80

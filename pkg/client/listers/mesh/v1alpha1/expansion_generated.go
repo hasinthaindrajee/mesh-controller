@@ -44,6 +44,14 @@ type ServiceListerExpansion interface{}
 // ServiceNamespaceLister.
 type ServiceNamespaceListerExpansion interface{}
 
+// StandardCellListerExpansion allows custom methods to be added to
+// StandardCellLister.
+type StandardCellListerExpansion interface{}
+
+// StandardCellNamespaceListerExpansion allows custom methods to be added to
+// StandardCellNamespaceLister.
+type StandardCellNamespaceListerExpansion interface{}
+
 // TokenServiceListerExpansion allows custom methods to be added to
 // TokenServiceLister.
 type TokenServiceListerExpansion interface{}
@@ -51,3 +59,11 @@ type TokenServiceListerExpansion interface{}
 // TokenServiceNamespaceListerExpansion allows custom methods to be added to
 // TokenServiceNamespaceLister.
 type TokenServiceNamespaceListerExpansion interface{}
+
+// WebCellListerExpansion allows custom methods to be added to
+// WebCellLister.
+type WebCellListerExpansion interface{}
+
+// WebCellNamespaceListerExpansion allows custom methods to be added to
+// WebCellNamespaceLister.
+type WebCellNamespaceListerExpansion interface{}

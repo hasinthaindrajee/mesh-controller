@@ -42,8 +42,16 @@ func (c *FakeMeshV1alpha1) Services(namespace string) v1alpha1.ServiceInterface 
 	return &FakeServices{c, namespace}
 }
 
+func (c *FakeMeshV1alpha1) StandardCells(namespace string) v1alpha1.StandardCellInterface {
+	return &FakeStandardCells{c, namespace}
+}
+
 func (c *FakeMeshV1alpha1) TokenServices(namespace string) v1alpha1.TokenServiceInterface {
 	return &FakeTokenServices{c, namespace}
+}
+
+func (c *FakeMeshV1alpha1) WebCells(namespace string) v1alpha1.WebCellInterface {
+	return &FakeWebCells{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

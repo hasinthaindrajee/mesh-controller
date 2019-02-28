@@ -40,6 +40,8 @@ type GatewayTemplateSpec struct {
 }
 
 type GatewaySpec struct {
+	// set 'envoy' to attach envoy as http gateway
+	Type       string      `json:"type"`
 	HTTPRoutes []HTTPRoute `json:"http"`
 	TCPRoutes  []TCPRoute  `json:"tcp"`
 }

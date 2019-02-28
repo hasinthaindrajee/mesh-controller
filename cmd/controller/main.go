@@ -20,14 +20,12 @@ package main
 
 import (
 	"flag"
-	"github.com/cellery-io/mesh-controller/pkg/version"
 	"time"
-
-	"k8s.io/client-go/tools/cache"
 
 	"github.com/golang/glog"
 	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/cellery-io/mesh-controller/pkg/apis/mesh"
@@ -36,8 +34,11 @@ import (
 	"github.com/cellery-io/mesh-controller/pkg/controller/cell"
 	"github.com/cellery-io/mesh-controller/pkg/controller/gateway"
 	"github.com/cellery-io/mesh-controller/pkg/controller/service"
+	"github.com/cellery-io/mesh-controller/pkg/controller/standardcell"
 	"github.com/cellery-io/mesh-controller/pkg/controller/sts"
+	"github.com/cellery-io/mesh-controller/pkg/controller/webcell"
 	"github.com/cellery-io/mesh-controller/pkg/signals"
+	"github.com/cellery-io/mesh-controller/pkg/version"
 )
 
 const (
@@ -86,9 +87,12 @@ func main() {
 	deploymentInformer := kubeInformerFactory.Apps().V1().Deployments()
 	hpaInformer := kubeInformerFactory.Autoscaling().V2beta1().HorizontalPodAutoscalers()
 	networkPolicyInformer := kubeInformerFactory.Networking().V1().NetworkPolicies()
+	clusterIngressInformer := kubeInformerFactory.Extensions().V1beta1().Ingresses()
 
 	// Create Mesh informers
 	cellInformer := meshInformerFactory.Mesh().V1alpha1().Cells()
+	standardCellInformer := meshInformerFactory.Mesh().V1alpha1().StandardCells()
+	webCellInformer := meshInformerFactory.Mesh().V1alpha1().WebCells()
 	gatewayInformer := meshInformerFactory.Mesh().V1alpha1().Gateways()
 	tokenServiceInformer := meshInformerFactory.Mesh().V1alpha1().TokenServices()
 	serviceInformer := meshInformerFactory.Mesh().V1alpha1().Services()
@@ -109,6 +113,27 @@ func main() {
 		tokenServiceInformer,
 		serviceInformer,
 		networkPolicyInformer,
+		envoyFilterInformer,
+	)
+	standardCellController := standardcell.NewController(
+		kubeClient,
+		meshClient,
+		standardCellInformer,
+		gatewayInformer,
+		tokenServiceInformer,
+		serviceInformer,
+		networkPolicyInformer,
+		envoyFilterInformer,
+	)
+	webCellController := webcell.NewController(
+		kubeClient,
+		meshClient,
+		webCellInformer,
+		gatewayInformer,
+		tokenServiceInformer,
+		serviceInformer,
+		networkPolicyInformer,
+		clusterIngressInformer,
 		envoyFilterInformer,
 	)
 	gatewayController := gateway.NewController(
@@ -154,9 +179,12 @@ func main() {
 		deploymentInformer.Informer().HasSynced,
 		configMapInformer.Informer().HasSynced,
 		networkPolicyInformer.Informer().HasSynced,
+		clusterIngressInformer.Informer().HasSynced,
 		systemConfigMapInformer.Informer().HasSynced,
 		// Sync mesh informers
 		cellInformer.Informer().HasSynced,
+		standardCellInformer.Informer().HasSynced,
+		webCellInformer.Informer().HasSynced,
 		gatewayInformer.Informer().HasSynced,
 		tokenServiceInformer.Informer().HasSynced,
 		serviceInformer.Informer().HasSynced,
@@ -170,6 +198,8 @@ func main() {
 
 	//Start controllers
 	go cellController.Run(threadsPerController, stopCh)
+	go standardCellController.Run(threadsPerController, stopCh)
+	go webCellController.Run(threadsPerController, stopCh)
 	go gatewayController.Run(threadsPerController, stopCh)
 	go tokenServiceController.Run(threadsPerController, stopCh)
 	go serviceController.Run(threadsPerController, stopCh)

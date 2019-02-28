@@ -70,6 +70,22 @@ func CreateTokenServiceDeployment(tokenService *v1alpha1.TokenService, tokenServ
 									Name:  envCellNameKey,
 									Value: cellName,
 								},
+								{
+									Name:  "CELL_IMAGE_NAME",
+									Value: tokenService.Annotations["mesh.cellery.io/cell-image-name"],
+								},
+								{
+									Name:  "CELL_IMAGE_VERSION",
+									Value: tokenService.Annotations["mesh.cellery.io/cell-image-version"],
+								},
+								{
+									Name:  "CELL_INSTANCE_NAME",
+									Value: cellName,
+								},
+								{
+									Name:  "CELL_ORG_NAME",
+									Value: tokenService.Annotations["mesh.cellery.io/cell-image-org"],
+								},
 							},
 							VolumeMounts: []corev1.VolumeMount{
 								{

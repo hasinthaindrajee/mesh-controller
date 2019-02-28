@@ -58,3 +58,34 @@ func CreateIstioGateway(gateway *v1alpha1.Gateway) *v1alpha3.Gateway {
 		},
 	}
 }
+
+func CreateIstioGatewayHTTP(gateway *v1alpha1.Gateway) *v1alpha3.Gateway {
+
+	var gatewayServers []*v1alpha3.Server
+
+	//for _, tcpRoute := range gateway.Spec.TCPRoutes {
+	gatewayServers = append(gatewayServers, &v1alpha3.Server{
+		Hosts: []string{"*"},
+		Port: &v1alpha3.Port{
+			Number:   80,
+			Protocol: "HTTP",
+			Name:     fmt.Sprintf("http-%d", 80),
+		},
+	})
+	//}
+
+	return &v1alpha3.Gateway{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      IstioGatewayName(gateway),
+			Namespace: gateway.Namespace,
+			Labels:    createGatewayLabels(gateway),
+			OwnerReferences: []metav1.OwnerReference{
+				*controller.CreateGatewayOwnerRef(gateway),
+			},
+		},
+		Spec: v1alpha3.GatewaySpec{
+			Servers:  gatewayServers,
+			Selector: createGatewayLabels(gateway),
+		},
+	}
+}

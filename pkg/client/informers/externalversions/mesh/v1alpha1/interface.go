@@ -32,8 +32,12 @@ type Interface interface {
 	Gateways() GatewayInformer
 	// Services returns a ServiceInformer.
 	Services() ServiceInformer
+	// StandardCells returns a StandardCellInformer.
+	StandardCells() StandardCellInformer
 	// TokenServices returns a TokenServiceInformer.
 	TokenServices() TokenServiceInformer
+	// WebCells returns a WebCellInformer.
+	WebCells() WebCellInformer
 }
 
 type version struct {
@@ -62,7 +66,17 @@ func (v *version) Services() ServiceInformer {
 	return &serviceInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
+// StandardCells returns a StandardCellInformer.
+func (v *version) StandardCells() StandardCellInformer {
+	return &standardCellInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
 // TokenServices returns a TokenServiceInformer.
 func (v *version) TokenServices() TokenServiceInformer {
 	return &tokenServiceInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// WebCells returns a WebCellInformer.
+func (v *version) WebCells() WebCellInformer {
+	return &webCellInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }

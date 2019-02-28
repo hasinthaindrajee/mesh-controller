@@ -74,6 +74,8 @@ rules:
   - mesh.cellery.io
   resources:
   - cells
+  - standardcells
+  - webcells
   - services
   - gateways
   - tokenservices

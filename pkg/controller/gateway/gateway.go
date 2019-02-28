@@ -153,7 +153,7 @@ func (h *gatewayHandler) handle(gateway *v1alpha1.Gateway) error {
 		return err
 	}
 
-	if len(gateway.Spec.TCPRoutes) != 0 {
+	if len(gateway.Spec.TCPRoutes) != 0 || gateway.Spec.Type == "envoy" {
 		if err := h.handleIstioVirtualService(gateway); err != nil {
 			return err
 		}
@@ -199,14 +199,22 @@ func (h *gatewayHandler) handleConfigMap(gateway *v1alpha1.Gateway) error {
 func (h *gatewayHandler) handleDeployment(gateway *v1alpha1.Gateway) error {
 	deployment, err := h.deploymentLister.Deployments(gateway.Namespace).Get(resources.GatewayDeploymentName(gateway))
 	if errors.IsNotFound(err) {
-		if len(gateway.Spec.TCPRoutes) == 0 {
-			deployment, err = h.kubeClient.AppsV1().Deployments(gateway.Namespace).Create(resources.CreateGatewayDeployment(gateway, h.gatewayConfig))
-		} else {
+		if gateway.Spec.Type == "envoy" {
 			deployment, err = h.kubeClient.AppsV1().Deployments(gateway.Namespace).Create(resources.CreateGatewayDeploymentEnvoy(gateway, h.gatewayConfig))
-		}
-		if err != nil {
-			glog.Errorf("Failed to create Gateway Deployment %v", err)
-			return err
+			if err != nil {
+				glog.Errorf("Failed to create Gateway Deployment %v", err)
+				return err
+			}
+		} else {
+			if len(gateway.Spec.TCPRoutes) == 0 {
+				deployment, err = h.kubeClient.AppsV1().Deployments(gateway.Namespace).Create(resources.CreateGatewayDeployment(gateway, h.gatewayConfig))
+			} else {
+				deployment, err = h.kubeClient.AppsV1().Deployments(gateway.Namespace).Create(resources.CreateGatewayDeploymentEnvoy(gateway, h.gatewayConfig))
+			}
+			if err != nil {
+				glog.Errorf("Failed to create Gateway Deployment %v", err)
+				return err
+			}
 		}
 	} else if err != nil {
 		return err
@@ -225,7 +233,11 @@ func (h *gatewayHandler) handleDeployment(gateway *v1alpha1.Gateway) error {
 func (h *gatewayHandler) handleK8sService(gateway *v1alpha1.Gateway) error {
 	k8sService, err := h.k8sServiceLister.Services(gateway.Namespace).Get(resources.GatewayK8sServiceName(gateway))
 	if errors.IsNotFound(err) {
-		k8sService, err = h.kubeClient.CoreV1().Services(gateway.Namespace).Create(resources.CreateGatewayK8sService(gateway))
+		if gateway.Spec.Type == "envoy" {
+			k8sService, err = h.kubeClient.CoreV1().Services(gateway.Namespace).Create(resources.CreateGatewayK8sServiceEnvoy(gateway))
+		} else {
+			k8sService, err = h.kubeClient.CoreV1().Services(gateway.Namespace).Create(resources.CreateGatewayK8sService(gateway))
+		}
 		if err != nil {
 			glog.Errorf("Failed to create Gateway service %v", err)
 			return err
@@ -243,7 +255,11 @@ func (h *gatewayHandler) handleK8sService(gateway *v1alpha1.Gateway) error {
 func (h *gatewayHandler) handleIstioGateway(gateway *v1alpha1.Gateway) error {
 	istioGateway, err := h.istioGatewayLister.Gateways(gateway.Namespace).Get(resources.IstioGatewayName(gateway))
 	if errors.IsNotFound(err) {
-		istioGateway, err = h.meshClient.NetworkingV1alpha3().Gateways(gateway.Namespace).Create(resources.CreateIstioGateway(gateway))
+		if gateway.Spec.Type == "envoy" {
+			istioGateway, err = h.meshClient.NetworkingV1alpha3().Gateways(gateway.Namespace).Create(resources.CreateIstioGatewayHTTP(gateway))
+		} else {
+			istioGateway, err = h.meshClient.NetworkingV1alpha3().Gateways(gateway.Namespace).Create(resources.CreateIstioGateway(gateway))
+		}
 		if err != nil {
 			glog.Errorf("Failed to create Gateway service %v", err)
 			return err
@@ -259,7 +275,11 @@ func (h *gatewayHandler) handleIstioGateway(gateway *v1alpha1.Gateway) error {
 func (h *gatewayHandler) handleIstioVirtualService(gateway *v1alpha1.Gateway) error {
 	istioVS, err := h.istioVSLister.VirtualServices(gateway.Namespace).Get(resources.IstioVSName(gateway))
 	if errors.IsNotFound(err) {
-		istioVS, err = h.meshClient.NetworkingV1alpha3().VirtualServices(gateway.Namespace).Create(resources.CreateIstioVirtualService(gateway))
+		if gateway.Spec.Type == "envoy" {
+			istioVS, err = h.meshClient.NetworkingV1alpha3().VirtualServices(gateway.Namespace).Create(resources.CreateIstioVirtualServiceHTTP(gateway))
+		} else {
+			istioVS, err = h.meshClient.NetworkingV1alpha3().VirtualServices(gateway.Namespace).Create(resources.CreateIstioVirtualService(gateway))
+		}
 		if err != nil {
 			glog.Errorf("Failed to create Gateway service %v", err)
 			return err
