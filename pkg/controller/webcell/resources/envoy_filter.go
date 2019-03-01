@@ -44,26 +44,6 @@ func CreateEnvoyFilter(cell *v1alpha1.WebCell) *v1alpha3.EnvoyFilter {
 			Filters: []v1alpha3.Filter{
 				{
 					InsertPosition: v1alpha3.InsertPosition{
-						Index: filterInsertPositionFirst,
-					},
-					ListenerMatch: v1alpha3.ListenerMatch{
-						ListenerType:     filterListenerTypeInbound,
-						ListenerProtocol: HTTPProtocol,
-					},
-					FilterName: baseFilterName,
-					FilterType: HTTPProtocol,
-					FilterConfig: v1alpha3.FilterConfig{
-						GRPCService: v1alpha3.GRPCService{
-							GoogleGRPC: v1alpha3.GoogleGRPC{
-								TargetUri:  TokenServiceName(cell) + "-service:8080",
-								StatPrefix: statPrefix,
-							},
-							Timeout: filterTimeout,
-						},
-					},
-				},
-				{
-					InsertPosition: v1alpha3.InsertPosition{
 						Index: filterInsertPositionLast,
 					},
 					ListenerMatch: v1alpha3.ListenerMatch{

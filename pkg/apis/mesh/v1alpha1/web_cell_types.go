@@ -34,9 +34,10 @@ type WebCell struct {
 }
 
 type WebCellSpec struct {
-	HostName         string                `json:"hostName"`
-	GatewayTemplate  GatewayTemplateSpec   `json:"gatewayTemplate"`
-	ServiceTemplates []ServiceTemplateSpec `json:"servicesTemplates"`
+	HostName             string                   `json:"hostName"`
+	GatewayTemplate      GatewayTemplateSpec      `json:"gatewayTemplate"`
+	ServiceTemplates     []ServiceTemplateSpec    `json:"servicesTemplates"`
+	TokenServiceTemplate TokenServiceTemplateSpec `json:"stsTemplate"`
 }
 
 type WebCellStatus struct {

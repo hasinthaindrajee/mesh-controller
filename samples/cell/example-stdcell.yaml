@@ -51,3 +51,44 @@ spec:
       container:
         image: docker.io/mirage20/k8s-debug-tools
       servicePort: 80
+  stsTemplate:
+    spec:
+      opa:
+      - key: foo
+        regoPolicy: |
+          package example
+            default allow_entrance = false
+            default deny_entrance = false
+
+            allow_entrance {
+             re_match(allowed[_].cellImageName, input.authorizationContext.jwtContent.claims.cellImageName)
+             re_match(allowed[_].cellVersion, input.authorizationContext.jwtContent.claims.cellVersion)
+             re_match(allowed[_].cellInstanceName, input.source.cellInstanceName)
+            }
+
+            allow_entrance {
+             count(input.authorizationContext.jwtContent.claims.sub, letters)
+             letters > 0
+            }
+
+            allowed = [{"cellImageName" : "wso2.*", "cellInstanceName" : "myInstance", "cellVersion" : "1.0.0"}, {"cellImageName" : "frontend2", "cellInstanceName" : "myInstance", "cellVersion" : "1.0.0"}]
+      - key: bar
+        regoPolicy: |
+          package example
+            default allow_entrance = false
+            default deny_entrance = false
+
+            allow_entrance {
+             re_match(allowed[_].cellImageName, input.authorizationContext.jwtContent.claims.cellImageName)
+             re_match(allowed[_].cellVersion, input.authorizationContext.jwtContent.claims.cellVersion)
+             re_match(allowed[_].cellInstanceName, input.source.cellInstanceName)
+            }
+
+            deny_entrance {
+             re_match(denied[_].cellImageName, input.authorizationContext.jwtContent.claims.cellImageName)
+             re_match(denied[_].cellVersion, input.authorizationContext.jwtContent.claims.cellVersion)
+             re_match(denied[_].cellInstanceName, input.source.cellInstanceName)
+            }
+
+            allowed = [{"cellImageName" : "wso2.*", "cellInstanceName" : "myInstance", "cellVersion" : "1.0.0"}, {"cellImageName" : "frontend2", "cellInstanceName" : "myInstance", "cellVersion" : "1.0.0"}]
+

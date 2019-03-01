@@ -40,6 +40,12 @@ type TokenServiceTemplateSpec struct {
 }
 
 type TokenServiceSpec struct {
+	OpaPolicies []OpaPolicy `json:"opa,omitempty"`
+}
+
+type OpaPolicy struct {
+	Key    string `json:"key,omitempty"`
+	Policy string `json:"regoPolicy,omitempty"`
 }
 
 type TokenServiceStatus struct {

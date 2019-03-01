@@ -36,5 +36,6 @@ func CreateTokenService(cell *v1alpha1.WebCell) *v1alpha1.TokenService {
 				*controller.CreateWebCellOwnerRef(cell),
 			},
 		},
+		Spec: cell.Spec.TokenServiceTemplate.Spec,
 	}
 }

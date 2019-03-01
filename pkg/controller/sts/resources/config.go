@@ -19,6 +19,7 @@
 package resources
 
 import (
+	"fmt"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -44,6 +45,14 @@ func CreateTokenServiceConfigMap(tokenService *v1alpha1.TokenService, tokenServi
 }
 
 func CreateTokenServiceOPAConfigMap(tokenService *v1alpha1.TokenService, tokenServiceConfig config.TokenService) *corev1.ConfigMap {
+
+	m := make(map[string]string)
+	m["default.rego"] = tokenServiceConfig.Policy
+
+	for _, v := range tokenService.Spec.OpaPolicies {
+		m[fmt.Sprintf("%s.rego", v.Key)] = v.Policy
+	}
+
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      TokenServicePolicyConfigMapName(tokenService),
@@ -53,8 +62,6 @@ func CreateTokenServiceOPAConfigMap(tokenService *v1alpha1.TokenService, tokenSe
 				*controller.CreateTokenServiceOwnerRef(tokenService),
 			},
 		},
-		Data: map[string]string{
-			policyConfigKey: tokenServiceConfig.Policy,
-		},
+		Data: m,
 	}
 }

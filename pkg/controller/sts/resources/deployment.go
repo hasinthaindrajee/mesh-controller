@@ -93,6 +93,11 @@ func CreateTokenServiceDeployment(tokenService *v1alpha1.TokenService, tokenServ
 									MountPath: configMountPath,
 									ReadOnly:  true,
 								},
+								{
+									Name:      policyVolumeName,
+									MountPath: pocliyConfigMountPath,
+									ReadOnly:  true,
+								},
 							},
 						},
 						{
@@ -145,12 +150,12 @@ func CreateTokenServiceDeployment(tokenService *v1alpha1.TokenService, tokenServ
 									LocalObjectReference: corev1.LocalObjectReference{
 										Name: TokenServicePolicyConfigMapName(tokenService),
 									},
-									Items: []corev1.KeyToPath{
-										{
-											Key:  policyConfigKey,
-											Path: policyConfigFile,
-										},
-									},
+									//Items: []corev1.KeyToPath{
+									//	{
+									//		Key:  policyConfigKey,
+									//		Path: policyConfigFile,
+									//	},
+									//},
 								},
 							},
 						},
