@@ -34,6 +34,9 @@ const (
 	tokenServiceConfigKey  = "sts-config"
 	tokenServiceConfigFile = "sts.json"
 
+	unsecuredPathsConfigKey  = "unsecured-paths"
+	unsecuredPathsConfigFile = "unsecured-paths.json"
+
 	configVolumeName = "config-volume"
 	configMountPath  = "/etc/config"
 

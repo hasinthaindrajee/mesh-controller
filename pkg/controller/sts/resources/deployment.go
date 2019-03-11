@@ -139,6 +139,10 @@ func CreateTokenServiceDeployment(tokenService *v1alpha1.TokenService, tokenServ
 											Key:  tokenServiceConfigKey,
 											Path: tokenServiceConfigFile,
 										},
+										{
+											Key:  unsecuredPathsConfigKey,
+											Path: unsecuredPathsConfigFile,
+										},
 									},
 								},
 							},

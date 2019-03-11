@@ -19,6 +19,7 @@
 package resources
 
 import (
+	"encoding/json"
 	"fmt"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -29,6 +30,7 @@ import (
 )
 
 func CreateTokenServiceConfigMap(tokenService *v1alpha1.TokenService, tokenServiceConfig config.TokenService) *corev1.ConfigMap {
+	unsecuredPaths, _ := json.Marshal(tokenService.Spec.UnsecuredPaths)
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      TokenServiceConfigMapName(tokenService),
@@ -40,6 +42,7 @@ func CreateTokenServiceConfigMap(tokenService *v1alpha1.TokenService, tokenServi
 		},
 		Data: map[string]string{
 			tokenServiceConfigKey: tokenServiceConfig.Config,
+			unsecuredPathsConfigKey:     string(unsecuredPaths),
 		},
 	}
 }

@@ -658,6 +658,11 @@ func (in *TokenServiceSpec) DeepCopyInto(out *TokenServiceSpec) {
 		*out = make([]OpaPolicy, len(*in))
 		copy(*out, *in)
 	}
+	if in.UnsecuredPaths != nil {
+		in, out := &in.UnsecuredPaths, &out.UnsecuredPaths
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	return
 }
 
