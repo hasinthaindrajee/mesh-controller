@@ -84,11 +84,5 @@ spec:
              re_match(allowed[_].cellInstanceName, input.source.cellInstanceName)
             }
 
-            deny_entrance {
-             re_match(denied[_].cellImageName, input.authorizationContext.jwtContent.claims.cellImageName)
-             re_match(denied[_].cellVersion, input.authorizationContext.jwtContent.claims.cellVersion)
-             re_match(denied[_].cellInstanceName, input.source.cellInstanceName)
-            }
-
             allowed = [{"cellImageName" : "wso2.*", "cellInstanceName" : "myInstance", "cellVersion" : "1.0.0"}, {"cellImageName" : "frontend2", "cellInstanceName" : "myInstance", "cellVersion" : "1.0.0"}]
 
