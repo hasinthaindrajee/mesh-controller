@@ -30,7 +30,15 @@ import (
 )
 
 func CreateTokenServiceConfigMap(tokenService *v1alpha1.TokenService, tokenServiceConfig config.TokenService) *corev1.ConfigMap {
-	unsecuredPaths, _ := json.Marshal(tokenService.Spec.UnsecuredPaths)
+	unsecuredPathsStr := "[]"
+	if len(tokenService.Spec.UnsecuredPaths) > 0 {
+		unsecuredPaths, _ := json.Marshal(tokenService.Spec.UnsecuredPaths)
+		unsecuredPathsStr = string(unsecuredPaths)
+	}
+
+	fmt.Println("=========================================================================")
+	fmt.Println(unsecuredPathsStr)
+
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      TokenServiceConfigMapName(tokenService),
@@ -41,8 +49,8 @@ func CreateTokenServiceConfigMap(tokenService *v1alpha1.TokenService, tokenServi
 			},
 		},
 		Data: map[string]string{
-			tokenServiceConfigKey: tokenServiceConfig.Config,
-			unsecuredPathsConfigKey:     string(unsecuredPaths),
+			tokenServiceConfigKey:   tokenServiceConfig.Config,
+			unsecuredPathsConfigKey: unsecuredPathsStr,
 		},
 	}
 }
