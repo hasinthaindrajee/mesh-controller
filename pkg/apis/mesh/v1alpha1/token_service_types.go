@@ -40,10 +40,29 @@ type TokenServiceTemplateSpec struct {
 }
 
 type TokenServiceSpec struct {
+	InterceptMode  InterceptMode `json:"interceptMode,omitempty"`
+	OpaPolicies    []OpaPolicy   `json:"opa,omitempty"`
+	UnsecuredPaths []string      `json:"unsecuredPaths,omitempty"`
+}
+
+type OpaPolicy struct {
+	Key    string `json:"key,omitempty"`
+	Policy string `json:"regoPolicy,omitempty"`
 }
 
 type TokenServiceStatus struct {
 }
+
+type InterceptMode string
+
+const (
+	// Intercept only the incoming traffic
+	InterceptModeInbound InterceptMode = "Inbound"
+	// Intercept only the outgoing traffic
+	InterceptModeOutbound InterceptMode = "Outbound"
+	// Intercept both incoming and outgoing traffic
+	InterceptModeAny InterceptMode = "Any"
+)
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 

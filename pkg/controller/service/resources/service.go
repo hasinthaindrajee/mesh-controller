@@ -19,10 +19,11 @@
 package resources
 
 import (
+	"strings"
+
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"strings"
 
 	"github.com/cellery-io/mesh-controller/pkg/apis/mesh/v1alpha1"
 	"github.com/cellery-io/mesh-controller/pkg/controller"
@@ -41,6 +42,8 @@ func CreateServiceK8sService(service *v1alpha1.Service) *corev1.Service {
 		protocol = serviceProtocolTCP
 	case serviceProtocolHTTP:
 		protocol = serviceProtocolHTTP
+	case serviceProtocolGRPC:
+		protocol = serviceProtocolGRPC
 	default:
 		protocol = serviceProtocolHTTP
 	}

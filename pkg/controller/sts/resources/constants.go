@@ -31,6 +31,9 @@ const (
 	tokenServiceContainerJWKSPort     = 8090
 	opaServicePort                    = 8181
 
+	unsecuredPathsConfigKey  = "unsecured-paths"
+	unsecuredPathsConfigFile = "unsecured-paths.json"
+
 	tokenServiceConfigKey  = "sts-config"
 	tokenServiceConfigFile = "sts.json"
 
@@ -40,8 +43,23 @@ const (
 	policyVolumeName      = "cell-policy"
 	pocliyConfigMountPath = "/policies"
 
+	keyPairVolumeName = "cell-keys"
+	keyPairMountPath  = "/etc/certs"
+
 	policyConfigKey  = "policy.rego"
 	policyConfigFile = "sample.rego"
 
 	envCellNameKey = "CELL_NAME"
+
+	// Envoy filter
+	filterInsertPositionFirst = "FIRST"
+	filterInsertPositionLast  = "LAST"
+
+	filterListenerTypeInbound  = "SIDECAR_INBOUND"
+	filterListenerTypeOutbound = "SIDECAR_OUTBOUND"
+
+	HTTPProtocol   = "HTTP"
+	baseFilterName = "envoy.ext_authz"
+	statPrefix     = "ext_authz"
+	filterTimeout  = "10s"
 )

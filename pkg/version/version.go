@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 WSO2 Inc. (http:www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019 WSO2 Inc. (http:www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,15 +16,26 @@
  * under the License.
  */
 
-package resources
+package version
 
-const (
-	defaultServiceContainerPort int32 = 8080
-
-	// used for tracing
-	appLabelKey = "app"
-
-	serviceProtocolTCP  = "tcp"
-	serviceProtocolHTTP = "http"
-	serviceProtocolGRPC = "grpc"
+import (
+	"fmt"
+	"runtime"
 )
+
+var (
+	buildVersion     = "unknown"
+	buildGitRevision = "unknown"
+	buildTime        = "unknown"
+)
+
+const appName = "Mesh Controller"
+
+func String() string {
+	return fmt.Sprintf("%v [Version: %v, Git Revision: %v, Go Version: %v, Build Time: %v]",
+		appName,
+		buildVersion,
+		buildGitRevision,
+		runtime.Version(),
+		buildTime)
+}
