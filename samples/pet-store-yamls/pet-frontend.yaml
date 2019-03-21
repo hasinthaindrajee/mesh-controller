@@ -12,9 +12,10 @@ spec:
       type: Envoy
       host: pet-store.com
       oidc:
-        discoveryUrl: https://accounts.google.com
-        clientId: :)
-        clientSecret: :)
+        discoveryUrl: https://idp.cellery-system/oauth2/token
+        clientId: petstoreapplicationcelleryizza
+        dcrUser: admin
+        dcrPassword: admin
         redirectUrl: http://pet-store.com/_auth/callback
         baseUrl: http://pet-store.com/items/
         subjectClaim: given_name
